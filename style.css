@@ -1,0 +1,231 @@
+/* Reset and base */
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  color-scheme: dark;
+  --bg: #2a2a2a;
+  --muted: #9a9a9a;
+  --gutter: clamp(16px, 5vw, 64px);
+  --pad-l: max(var(--gutter), env(safe-area-inset-left, 0px));
+  --pad-r: max(var(--gutter), env(safe-area-inset-right, 0px));
+  --space: clamp(24px, 4vw, 48px);   /* one vertical rhythm for the whole page */
+  --album-w: 220px;
+  --gap: 24px;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  font-family: system-ui, Arial, sans-serif;
+  line-height: 1.5;
+  background-color: var(--bg);
+  color: #eaeaea;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:focus-visible,
+.edge:focus-visible {
+  outline: 2px solid #eaeaea;
+  outline-offset: -2px;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Header */
+.header {
+  padding: var(--space) var(--pad-r) var(--space) var(--pad-l);
+  text-align: center;
+}
+
+.name {
+  margin: 0;
+  font-size: clamp(2.5rem, 12vw, 9.5rem);
+  font-weight: 150;
+  line-height: 1;
+  word-spacing: 0.09em;
+  
+}
+
+.intro {
+  font-size: clamp(0.1rem, 3vw, 1.10rem);
+  margin: 12px 0 0;
+  color: var(--muted);
+}
+
+/* Main fills the free height and centers the carousel vertically */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 0 var(--space);
+}
+
+.main h2 {
+  margin: 0 var(--pad-r) 20px var(--pad-l);
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+/* Carousel */
+.carousel {
+  --fade: clamp(32px, 12vw, 160px);  /* width of the fog at each edge */
+  position: relative;
+}
+
+.albums {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  /* Fog: content fades into the page background itself, so there is no color to mismatch */
+  -webkit-mask-image: linear-gradient(to right,
+    transparent 0,
+    rgba(0,0,0,.104) calc(var(--fade) * .2),
+    rgba(0,0,0,.352) calc(var(--fade) * .4),
+    rgba(0,0,0,.648) calc(var(--fade) * .6),
+    rgba(0,0,0,.896) calc(var(--fade) * .8),
+    #000 var(--fade),
+    #000 calc(100% - var(--fade)),
+    rgba(0,0,0,.896) calc(100% - var(--fade) * .8),
+    rgba(0,0,0,.648) calc(100% - var(--fade) * .6),
+    rgba(0,0,0,.352) calc(100% - var(--fade) * .4),
+    rgba(0,0,0,.104) calc(100% - var(--fade) * .2),
+    transparent 100%);
+  mask-image: linear-gradient(to right,
+    transparent 0,
+    rgba(0,0,0,.104) calc(var(--fade) * .2),
+    rgba(0,0,0,.352) calc(var(--fade) * .4),
+    rgba(0,0,0,.648) calc(var(--fade) * .6),
+    rgba(0,0,0,.896) calc(var(--fade) * .8),
+    #000 var(--fade),
+    #000 calc(100% - var(--fade)),
+    rgba(0,0,0,.896) calc(100% - var(--fade) * .8),
+    rgba(0,0,0,.648) calc(100% - var(--fade) * .6),
+    rgba(0,0,0,.352) calc(100% - var(--fade) * .4),
+    rgba(0,0,0,.104) calc(100% - var(--fade) * .2),
+    transparent 100%);
+}
+
+.albums::-webkit-scrollbar {
+  display: none;
+}
+
+.albums > li {
+  flex: 0 0 var(--album-w);
+  width: var(--album-w);
+}
+
+/* Whole-pixel sizes keep the loop seamless */
+@media (min-width: 600px)  { :root { --album-w: 260px; --gap: 28px; } }
+@media (min-width: 900px)  { :root { --album-w: 300px; --gap: 32px; } }
+@media (min-width: 1200px) { :root { --album-w: 340px; --gap: 32px; } }
+
+.album-cover {
+  display: block;
+}
+
+.album-cover img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  background-color: #2a2a2a;
+}
+
+.album-cover:hover img {
+  opacity: 0.85;
+}
+
+.album-title {
+  margin: 12px 0 0;
+  font-size: 1rem;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.album-artist {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+/* Invisible hover zones over the fog */
+.edge {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  width: var(--fade);
+  padding: 0;
+  border: 0;
+  background: none;
+  appearance: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.edge-left  { left: 0; }
+.edge-right { right: 0; }
+
+/* Touch devices swipe instead */
+@media (hover: none) {
+  .edge {
+    display: none;
+  }
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .name {
+    font-size: clamp(2.5rem, 9vw, 5rem);
+  }
+}
+
+/* Footer: orange glow that grows out of the page background */
+.footer {
+  padding: calc(var(--space) * 2) var(--pad-r) calc(var(--space) * 0.75 + env(safe-area-inset-bottom, 0px)) var(--pad-l);
+  text-align: center;
+  font-size: 0.90rem;
+  color: #eaeaea;
+  background: linear-gradient(to bottom,
+    rgba(255, 140, 0, 0) 0%,
+    rgba(255, 140, 0, .02) 20%,
+    rgba(255, 140, 0, .08) 40%,
+    rgba(255, 140, 0, .18) 60%,
+    rgba(255, 140, 0, .32) 80%,
+    rgba(255, 140, 0, .5) 100%);
+}
+
+.manhole-cover p {
+  margin: 0;
+}
+
+.project {
+  letter-spacing: 0.01em;
+  font-weight: 300;
+}
